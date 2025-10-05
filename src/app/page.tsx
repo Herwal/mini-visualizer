@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getData, Questions } from "./api/get-data";
+import type { Questions } from "./api/get-data";
+import { getData } from "./api/get-data";
+import Graphs from "./components/graphs";
 
 export default function Home() {
   const [showCategories, setShowCategories] = useState(false);
@@ -19,34 +21,48 @@ export default function Home() {
     fetchQuestions();
   }, []);
 
-  console.log(questions);
-
   const uniqueCategories = Array.from(new Set(categories));
 
   return (
-    <main className="">
-      <div className="flex flex-col items-center p-4">
-        {/* div for buttons */}
-        <div className="flex flex-row items-center justify-between p-24">
+    <main className="min-h-screen bg-gray-50">
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Analytics Dashboard
+          </h1>
           <button
             type="button"
             onClick={() => setShowCategories((prev) => !prev)}
-            className="bg-violet-500 hover:bg-violet-600 focus:outline-2 focus:outline-offset-2 focus:outline-violet-500 active:bg-violet-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
           >
             {showCategories ? "Hide Categories" : "Show Categories"}
           </button>
         </div>
 
-        <div>
-          {showCategories && (
-            <div className="flex flex-wrap gap-4 justify-center mx-4 w-1/2">
+        {showCategories && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <h2 className="text-lg font-medium text-gray-900 mb-3">
+              Categories
+            </h2>
+            <div className="flex flex-wrap gap-2">
               {uniqueCategories.map((category: string) => (
-              <div key={category} className="p-4 border rounded shadow">
-              {category}
-              </div>
+                <span
+                  key={category}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                >
+                  {category
+                    .replace(/^Entertainment:\s*/, "")
+                    .replace(/^Science:\s*/, "")}
+                </span>
               ))}
             </div>
-          )}
+          </div>
+        )}
+      </div>
+
+      <div className="flex">
+        <div className="flex-1 overflow-hidden">
+          <Graphs />
         </div>
       </div>
     </main>
